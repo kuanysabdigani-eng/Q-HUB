@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus — Startup Network & Ecosystem</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- NAVIGATION -->
+    <nav class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i data-lucide="zap" class="w-5 h-5 text-slate-950"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-400 bg-clip-text text-transparent">Nexus</span>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <button onclick="switchTab('feed')" id="nav-feed" class="text-brand-400 transition hover:text-white flex items-center space-x-1.5">
+                    <i data-lucide="compass" class="w-4 h-4"></i>
+                    <span>Feed</span>
+                </button>
+                <button onclick="switchTab('clubs')" id="nav-clubs" class="transition hover:text-white flex items-center space-x-1.5">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>Clubs</span>
+                </button>
+                <button onclick="switchTab('talents')" id="nav-talents" class="transition hover:text-white flex items-center space-x-1.5">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <span>Engineers & Investors</span>
+                </button>
+                <button onclick="switchTab('search')" id="nav-search" class="transition hover:text-white flex items-center space-x-1.5">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span>Search</span>
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="openModal('createClubModal')" class="inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-500 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl transition shadow-lg shadow-brand-600/20">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Create Club</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: EXPLORE FEED -->
+        <div id="tab-feed" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight">Live Build Logs & Updates</h1>
+                    <p class="text-sm text-slate-400 mt-1">Real updates, milestones, and hiring posts published directly by founders and engineers.</p>
+                </div>
+                <button onclick="openModal('createClubModal')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition flex items-center justify-center space-x-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Publish Update</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Posts Column -->
+                <div id="posts-container" class="lg:col-span-2 space-y-6"></div>
+
+                <!-- Right Sidebar -->
+                <div class="space-y-6">
+                    <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center space-x-2">
+                            <i data-lucide="trending-up" class="w-4 h-4 text-brand-400"></i>
+                            <span>Ecosystem Status</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-2 border-b border-slate-800/60">
+                                <span class="text-sm text-slate-400">Active Clubs</span>
+                                <span id="statProjects" class="text-sm font-bold text-white">0</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-slate-400">Registered Talents</span>
+                                <span id="statProfiles" class="text-sm font-bold text-brand-400">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: STARTUP CLUBS -->
+        <div id="tab-clubs" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight">Startup Clubs & Rooms</h1>
+                    <p class="text-sm text-slate-400 mt-1">Explore real clubs created by founders and invite platform engineers or investors directly.</p>
+                </div>
+                <button onclick="openModal('createClubModal')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition flex items-center space-x-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Create Club</span>
+                </button>
+            </div>
+
+            <div id="clubs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- TAB 3: TALENTS & INVESTORS DIRECTORY -->
+        <div id="tab-talents" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight">Engineers & Investors Directory</h1>
+                    <p class="text-sm text-slate-400 mt-1">Browse active members on the platform with their portfolios and tech stacks.</p>
+                </div>
+                <button onclick="openModal('createClubModal')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition flex items-center space-x-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    <span>Register Profile</span>
+                </button>
+            </div>
+
+            <div id="talents-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- TAB 4: SMART SEARCH -->
+        <div id="tab-search" class="hidden space-y-6">
+            <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center max-w-3xl mx-auto">
+                <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-400 mx-auto flex items-center justify-center mb-4">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight mb-2">Smart Network Search</h1>
+                <p class="text-sm text-slate-400 mb-6">Search through user-submitted clubs, engineers, investors, and portfolios.</p>
+                
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500"></i>
+                        <input type="text" id="smartSearchInput" oninput="executeSmartSearch()" placeholder="Search by niche, tech stack, name, or role..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-4">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Search Results (<span id="resultsCount">0</span>)</h3>
+                <div id="search-results-container" class="space-y-4"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: CREATE CLUB & PROFILE -->
+    <div id="createClubModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('createClubModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <h2 class="text-xl font-bold tracking-tight">Create Club & Profile</h2>
+                <p class="text-xs text-slate-400 mt-1">Register your profile in the directory and launch your startup club.</p>
+            </div>
+
+            <form id="createClubForm" onsubmit="handleCreateClub(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Your Name / Handle</label>
+                    <input type="text" id="newFounder" required placeholder="e.g., Abdigani" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Your Role / Type</label>
+                    <select id="newUserType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                        <option value="Founder / Product Owner">Founder / Product Owner</option>
+                        <option value="Engineer / Coder">Engineer / Coder</option>
+                        <option value="Investor / Angel">Investor / Angel</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Tech Stack or Focus</label>
+                    <input type="text" id="newRole" required placeholder="e.g., C++, Hardware, AI / Pre-seed VC" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Portfolio / GitHub / LinkedIn Link</label>
+                    <input type="url" id="newPortfolio" required placeholder="https://github.com/yourprofile" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <hr class="border-slate-800">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Club / Startup Name</label>
+                    <input type="text" id="newClubName" required placeholder="e.g., Q-Air Systems Club" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Niche / Industry</label>
+                    <input type="text" id="newClubNiche" required placeholder="e.g., Cleantech & IoT" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Club Description</label>
+                    <textarea id="newClubDesc" rows="3" required placeholder="What are you building inside this club?" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Looking For</label>
+                    <input type="text" id="newClubLooking" required placeholder="e.g., Seeking Embedded Engineers & Investors" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div class="pt-2 flex items-center justify-end space-x-3">
+                    <button type="button" onclick="closeModal('createClubModal')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-brand-600/20">Launch Club</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: INVITE MEMBER FROM PLATFORM DIRECTORY -->
+    <div id="inviteModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('inviteModal')" class="absolute top-6 right-6 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <h2 class="text-xl font-bold tracking-tight">Invite Platform Member</h2>
+                <p id="inviteClubSubtitle" class="text-xs text-slate-400 mt-1">Select an engineer or investor registered on Nexus to join your club.</p>
+            </div>
+            
+            <div id="platformUsersList" class="space-y-3 max-h-64 overflow-y-auto pr-1">
+                <!-- Dynamically populated registered users -->
+            </div>
+
+            <div class="pt-2 flex items-center justify-end">
+                <button type="button" onclick="closeModal('inviteModal')" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-brand-500/50 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300">
+        <div class="w-6 h-6 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+        </div>
+        <span id="toastMessage" class="text-xs font-medium">Done!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let feedPosts = JSON.parse(localStorage.getItem('nexus_posts')) || [];
+        let startupClubs = JSON.parse(localStorage.getItem('nexus_clubs')) || [];
+        let registeredUsers = JSON.parse(localStorage.getItem('nexus_users')) || [];
+        let currentSelectedClub = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderFeed();
+            renderClubs();
+            renderTalents();
+            updateStats();
+            executeSmartSearch();
+        });
+
+        function saveToStorage() {
+            localStorage.setItem('nexus_posts', JSON.stringify(feedPosts));
+            localStorage.setItem('nexus_clubs', JSON.stringify(startupClubs));
+            localStorage.setItem('nexus_users', JSON.stringify(registeredUsers));
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('statProjects').innerText = startupClubs.length;
+            document.getElementById('statProfiles').innerText = registeredUsers.length;
+        }
+
+        function switchTab(tabName) {
+            ['feed', 'clubs', 'talents', 'search'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) {
+                    navBtn.classList.remove('text-brand-400');
+                    navBtn.classList.add('text-slate-300');
+                }
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabName}`);
+            if (activeNav) {
+                activeNav.classList.add('text-brand-400');
+                activeNav.classList.remove('text-slate-300');
+            }
+            lucide.createIcons();
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('posts-container');
+            if (feedPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center text-slate-400 space-y-3">
+                        <i data-lucide="inbox" class="w-8 h-8 mx-auto text-slate-600"></i>
+                        <p class="text-sm">No updates yet. Be the first to create a club and publish a build log!</p>
+                        <button onclick="openModal('createClubModal')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-4 py-2 rounded-xl text-xs transition">Create Club</button>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = feedPosts.map(post => `
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-4 hover:border-slate-700 transition">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center font-bold text-brand-400 justify-center">
+                                ${post.startup.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm flex items-center space-x-2">
+                                    <span>${post.startup}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-brand-400 font-normal border border-slate-700">${post.tag}</span>
+                                </h4>
+                                <p class="text-xs text-slate-400">${post.founder} (${post.role}) • ${post.time}</p>
+                            </div>
+                        </div>
+                        <a href="${post.portfolio}" target="_blank" class="bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center space-x-1">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            <span>Portfolio</span>
+                        </a>
+                    </div>
+                    <p class="text-sm text-slate-200 leading-relaxed">${post.content}</p>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                        <span><strong class="text-slate-300">Goal:</strong> ${post.looking}</span>
+                        <button onclick="openInviteModal('${post.startup}')" class="text-brand-400 hover:underline font-medium flex items-center space-x-1">
+                            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                            <span>Invite Member</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderClubs() {
+            const container = document.getElementById('clubs-container');
+            if (startupClubs.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">No active startup clubs found. Click 'Create Club' to start one.</div>`;
+                return;
+            }
+
+            container.innerHTML = startupClubs.map(club => `
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between space-y-4 hover:border-slate-700 transition">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-500/20">Active Club</span>
+                            <a href="${club.portfolio}" target="_blank" class="text-xs text-brand-400 hover:underline flex items-center space-x-1">
+                                <i data-lucide="link" class="w-3 h-3"></i>
+                                <span>Portfolio</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">${club.name}</h3>
+                            <p class="text-xs text-brand-400 font-medium">${club.niche}</p>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">${club.desc}</p>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400">
+                            <span class="font-semibold text-slate-300">Target:</span> ${club.looking}
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-400">Lead: <strong class="text-slate-200">${club.founder}</strong></span>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="openInviteModal('${club.name}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-700 transition">
+                                Invite
+                            </button>
+                            <button onclick="showToast('Successfully joined ${club.name}!')" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold px-3 py-2 rounded-xl transition shadow-lg shadow-brand-600/20">
+                                Join
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderTalents() {
+            const container = document.getElementById('talents-container');
+            if (registeredUsers.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">No registered talents yet. Create a club & profile to appear here!</div>`;
+                return;
+            }
+
+            container.innerHTML = registeredUsers.map(user => `
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between space-y-4 hover:border-slate-700 transition">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${user.userType}</span>
+                            <a href="${user.portfolio}" target="_blank" class="text-xs text-brand-400 hover:underline flex items-center space-x-1">
+                                <i data-lucide="external-link" class="w-3 h-3"></i>
+                                <span>Portfolio</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">${user.founder}</h3>
+                            <p class="text-xs text-brand-400 font-medium">${user.role}</p>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-500">Nexus Member</span>
+                        <button onclick="showToast('Direct message opened with ${user.founder}!')" class="bg-slate-800 hover:bg-brand-600 hover:text-white text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-700 transition">
+                            Chat Now
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function executeSmartSearch() {
+            const query = document.getElementById('smartSearchInput').value.toLowerCase();
+            const container = document.getElementById('search-results-container');
+            
+            let matches = startupClubs.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.niche.toLowerCase().includes(query) || 
+                c.desc.toLowerCase().includes(query) ||
+                c.looking.toLowerCase().includes(query) ||
+                c.founder.toLowerCase().includes(query) ||
+                query === ''
+            );
+
+            document.getElementById('resultsCount').innerText = matches.length;
+
+            if (matches.length === 0) {
+                container.innerHTML = `<div class="bg-slate-900/50 border border-slate-800 p-6 rounded-2xl text-center text-sm text-slate-400">No matching clubs or members found.</div>`;
+                return;
+            }
+
+            container.innerHTML = matches.map(m => `
+                <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <h4 class="font-bold text-white">${m.name}</h4>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-400">${m.niche}</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Founder: ${m.founder} (${m.role})</p>
+                        <p class="text-xs text-slate-300 mt-2">${m.desc}</p>
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <button onclick="openInviteModal('${m.name}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2.5 rounded-xl border border-slate-700 transition">
+                            Invite
+                        </button>
+                        <a href="${m.portfolio}" target="_blank" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition">
+                            Portfolio
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('flex');
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function openInviteModal(clubName) {
+            currentSelectedClub = clubName;
+            document.getElementById('inviteClubSubtitle').innerText = `Select a registered platform member to join "${clubName}"`;
+            
+            const listContainer = document.getElementById('platformUsersList');
+            if (registeredUsers.length === 0) {
+                listContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-950 rounded-xl border border-slate-800">No other members registered yet. Ask your peers to create profiles!</div>`;
+            } else {
+                listContainer.innerHTML = registeredUsers.map(u => `
+                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-white">${u.founder} <span class="text-brand-400 font-normal">(${u.userType})</span></h4>
+                            <p class="text-[11px] text-slate-400">Stack: ${u.role}</p>
+                        </div>
+                        <button onclick="sendPlatformInvite('${u.founder}')" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+                            Send Invite
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            openModal('inviteModal');
+        }
+
+        function sendPlatformInvite(username) {
+            closeModal('inviteModal');
+            showToast(`Official invitation sent to ${username} for ${currentSelectedClub}!`);
+        }
+
+        function handleCreateClub(e) {
+            e.preventDefault();
+            const founder = document.getElementById('newFounder').value;
+            const userType = document.getElementById('newUserType').value;
+            const role = document.getElementById('newRole').value;
+            const portfolio = document.getElementById('newPortfolio').value;
+            const name = document.getElementById('newClubName').value;
+            const niche = document.getElementById('newClubNiche').value;
+            const desc = document.getElementById('newClubDesc').value;
+            const looking = document.getElementById('newClubLooking').value;
+
+            // Save user profile to directory if not already there
+            if (!registeredUsers.some(u => u.founder.toLowerCase() === founder.toLowerCase())) {
+                registeredUsers.push({ founder, userType, role, portfolio });
+            }
+
+            const newClub = {
+                id: Date.now(),
+                founder,
+                role,
+                portfolio,
+                name,
+                niche,
+                desc,
+                looking
+            };
+
+            const newPost = {
+                id: Date.now(),
+                startup: name,
+                founder,
+                role,
+                portfolio,
+                tag: niche.split('/')[0].trim(),
+                content: desc,
+                looking,
+                time: 'Just now'
+            };
+
+            startupClubs.unshift(newClub);
+            feedPosts.unshift(newPost);
+
+            saveToStorage();
+            renderClubs();
+            renderFeed();
+            renderTalents();
+            executeSmartSearch();
+            closeModal('createClubModal');
+            document.getElementById('createClubForm').reset();
+            showToast('Club & profile successfully registered!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
